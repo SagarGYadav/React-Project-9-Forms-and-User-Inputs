@@ -1,5 +1,8 @@
 import useInput from "../hooks/use-input";
 
+const isNotEmpty = (value) => value.trim() !== "";
+const isEmail = (value) => value.includes("@");
+
 const BasicForm = (props) => {
   const {
     value: enteredFirstName,
@@ -8,7 +11,7 @@ const BasicForm = (props) => {
     valueChangeHandler: firstNameChangeHandler,
     inputBlurHandler: firstNameBlurHandler,
     reset: resetFirstNameInput,
-  } = useInput((value) => value.trim() !== "");
+  } = useInput(isNotEmpty);
 
   const {
     value: enteredLastName,
@@ -17,7 +20,7 @@ const BasicForm = (props) => {
     valueChangeHandler: lastNameChangeHandler,
     inputBlurHandler: lastNameBlurHandler,
     reset: resetLastNameInput,
-  } = useInput((value) => value.trim() !== "");
+  } = useInput(isNotEmpty);
 
   const {
     value: enteredEmail,
@@ -26,7 +29,7 @@ const BasicForm = (props) => {
     valueChangeHandler: emailChangeHandler,
     inputBlurHandler: emailBlurHandler,
     reset: resetEmailInput,
-  } = useInput((value) => value.includes("@"));
+  } = useInput(isEmail);
 
   let formIsValid = false;
 
@@ -38,15 +41,14 @@ const BasicForm = (props) => {
     formIsValid = true;
   }
 
-  const formSubmissionHandler = (e) => {
+  const SubmitHandler = (e) => {
     e.preventDefault();
-    if (!enteredFirstNameIsValid) {
+    if (!formIsValid) {
       return;
     }
 
-    console.log(enteredFirstName);
-    console.log(enteredLastName);
-    console.log(enteredEmail);
+    console.log("Submitted!");
+    console.log(enteredFirstName, enteredLastName, enteredEmail);
 
     resetFirstNameInput();
     resetLastNameInput();
@@ -66,7 +68,7 @@ const BasicForm = (props) => {
     : "form-control";
 
   return (
-    <form onSubmit={formSubmissionHandler}>
+    <form onSubmit={SubmitHandler}>
       <div className={"control-group"}>
         <div className={firstNameInputClasses}>
           <label htmlFor="name">First Name</label>
@@ -78,7 +80,7 @@ const BasicForm = (props) => {
             value={enteredFirstName}
           />
           {lastNameInputHasError && (
-            <p className="error-text">Name must not be empty.</p>
+            <p className="error-text">Please enter first name.</p>
           )}
         </div>
         <div className={lastNameInputClasses}>
@@ -91,7 +93,7 @@ const BasicForm = (props) => {
             value={enteredLastName}
           />
           {lastNameInputHasError && (
-            <p className="error-text">Name must not be empty.</p>
+            <p className="error-text">Please enter last name.</p>
           )}
         </div>
       </div>
@@ -105,7 +107,7 @@ const BasicForm = (props) => {
           value={enteredEmail}
         />
         {emailInputHasError && (
-          <p className="error-text">Please enter a valid email.</p>
+          <p className="error-text">Please enter a valid email address.</p>
         )}
       </div>
       <div className="form-actions">
